@@ -1,40 +1,30 @@
-import { useEffect, useState } from 'react';
-import './App.css';
-import { APIProvider, Map, Marker } from '@vis.gl/react-google-maps';
-import CircularProgress from '@mui/material/CircularProgress';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Map, Staff } from './pages';
+import NewBookingComponent from './pages/staff/components/NewBooking';
+import ResolveGPSComponent from './pages/staff/components/ResolveGPS';
 
-function App() {
-  const API_KEY = 'AIzaSyAe_FAtgZw3zJZN9RySh-4WMVHzXruyuaA';
-  const [currentLocation, setCurrentLocation] = useState({ lat: 0, lng: 0 });
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition((position) => {
-      setCurrentLocation({
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-      });
-      setLoading(false);
-    });
-  }, []);
-
-  if (loading) {
-    return <CircularProgress />;
-  }
-
+export default function RouterHandler() {
   return (
-    <APIProvider apiKey={API_KEY}>
-      <Map
-        style={{ width: '100vw', height: '100vh' }}
-        defaultCenter={currentLocation}
-        defaultZoom={20}
-        gestureHandling={'greedy'}
-        disableDefaultUI={true}
-      >
-        <Marker position={currentLocation} />
-      </Map>
-    </APIProvider>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Map />} />
+        <Route
+          path="/staff/new-booking"
+          element={
+            <Staff>
+              <NewBookingComponent />
+            </Staff>
+          }
+        />
+        <Route
+          path="/staff/resolve-gps"
+          element={
+            <Staff>
+              <ResolveGPSComponent />
+            </Staff>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
-
-export default App;
