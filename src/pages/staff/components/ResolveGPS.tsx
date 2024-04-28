@@ -10,6 +10,7 @@ import {
 import * as React from 'react';
 import EditGPSModal from './EditGPSModal';
 import { APIProvider } from '@vis.gl/react-google-maps';
+import { doGet } from '@utils/APIRequest';
 
 interface LocationValueProps {
   _id: string;
@@ -37,12 +38,9 @@ export default function ResolveGPSComponent() {
     React.useState<LocationValueProps | null>(null);
 
   React.useEffect(() => {
-    const fetchData = () => {
-      fetch('http://localhost:3000/api/location-records/unresolved-list')
-        .then((res) => res.json())
-        .then((res) => {
-          setUnresolvedData(formatLocationData(res.data.data));
-        });
+    const fetchData = async () => {
+      const response = await doGet('http://localhost:3000/api/location-records/unresolved-list');
+      setUnresolvedData(formatLocationData(response.data.data));
     };
 
     // Call fetchData immediately
@@ -70,7 +68,7 @@ export default function ResolveGPSComponent() {
 
   return (
     <Grid item xs={4} lg={9}>
-      <Typography variant="h5" align="left">
+      <Typography variant="h5" align="left" padding={2}>
         Unresolved GPS
       </Typography>
       <Table>

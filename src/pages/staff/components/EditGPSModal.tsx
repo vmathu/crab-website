@@ -1,4 +1,5 @@
 import { Modal, Box, Typography, Button } from '@mui/material';
+import { doPatch } from '@utils/APIRequest';
 import {
   Map,
   Marker,
@@ -86,18 +87,10 @@ export default function EditGPSModal({ onClose, value }: EditGPSModalProps) {
       location: currPosition,
     }
 
-    const response = await fetch(`http://localhost:3000/api/location-records/${value?._id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
+    const response = await doPatch(`http://localhost:3000/api/location-records/${value?._id}`, data);
 
-    const result = await response.json();
-    
     // Close the modal on success
-    if (result.success) {
+    if (response.success) {
       handleClose();
       window.location.reload();
     }
