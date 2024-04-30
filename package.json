@@ -10,8 +10,11 @@
     "preview": "vite preview",
     "lint-staged": {
       "*.{js,jsx,ts,tsx}": [
-        "eslint --fix",
-        "prettier --write"
+        "eslint --quiet --fix",
+        "prettier --write --ignore-unknown"
+      ],
+      "*.{json,html}": [
+        "prettier --write --ignore-unknown"
       ]
     }
   },

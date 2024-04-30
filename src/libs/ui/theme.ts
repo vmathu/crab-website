@@ -61,6 +61,16 @@ const theme = createTheme({
             },
           },
         },
+        {
+          props: { variant: 'contained' },
+          style: {
+            color: colors.white,
+            background: colors.green500,
+            '&:hover': {
+              background: colors.green400,
+            },
+          },
+        },
       ],
       styleOverrides: {
         root: {
@@ -135,8 +145,6 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           fontFamily: '"Be Vietnam Pro", san-serif',
-          background: colors.green800,
-          color: colors.white,
           fontSize: '16px',
         },
       },
@@ -341,15 +349,8 @@ type CustomTheme = {
   [Key in keyof typeof theme]: (typeof theme)[Key];
 };
 
-declare module '@mui/material/Typography' {
-  interface TypographyPropsVariantOverrides {
-    title: true;
-  }
-}
-
 declare module '@mui/material/Button' {
   interface ButtonPropsVariantOverrides {
-    filled: true;
     disable: true;
   }
 }
