@@ -1,40 +1,41 @@
-import { useEffect, useState } from 'react';
-import './App.css';
-import { APIProvider, Map, Marker } from '@vis.gl/react-google-maps';
-import CircularProgress from '@mui/material/CircularProgress';
+import { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { checkCookie } from '@utils/Cookie';
+import { Map, Staff, SignIn } from './pages';
+import NewBookingComponent from './pages/staff/components/NewBooking';
+import ResolveGPSComponent from './pages/staff/components/ResolveGPS';
 
-function App() {
-  const API_KEY = 'AIzaSyAe_FAtgZw3zJZN9RySh-4WMVHzXruyuaA';
-  const [currentLocation, setCurrentLocation] = useState({ lat: 0, lng: 0 });
-  const [loading, setLoading] = useState(true);
+export default function RouterHandler() {
+  const [shouldRedirect, setShouldRedirect] = useState(false);
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition((position) => {
-      setCurrentLocation({
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-      });
-      setLoading(false);
-    });
+    const isCookieValid = checkCookie('token');
+    setShouldRedirect(!isCookieValid);
   }, []);
 
-  if (loading) {
-    return <CircularProgress />;
-  }
-
   return (
-    <APIProvider apiKey={API_KEY}>
-      <Map
-        style={{ width: '100vw', height: '100vh' }}
-        defaultCenter={currentLocation}
-        defaultZoom={20}
-        gestureHandling={'greedy'}
-        disableDefaultUI={true}
-      >
-        <Marker position={currentLocation} />
-      </Map>
-    </APIProvider>
+    <BrowserRouter>
+      {shouldRedirect && <Navigate to='/sign-in' replace />}
+      <Routes>
+        <Route path='/sign-in' element={<SignIn />} />
+        <Route path="/" element={<Map />} />
+        <Route
+          path="/staff/new-booking"
+          element={
+            <Staff>
+              <NewBookingComponent />
+            </Staff>
+          }
+        />
+        <Route
+          path="/staff/resolve-gps"
+          element={
+            <Staff>
+              <ResolveGPSComponent />
+            </Staff>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
-
-export default App;
