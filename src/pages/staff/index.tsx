@@ -41,7 +41,7 @@ export default function Staff({children}: {children: React.ReactNode}){
                 Resolve GPS
               </Button>
               <Divider />
-              <Button color="error" sx={{ '&:focus': { outline: 'none' } }} onClick={handleLogOut}>
+              <Button color="error" onClick={handleLogOut}>
                 Logout
               </Button>
             </Stack>

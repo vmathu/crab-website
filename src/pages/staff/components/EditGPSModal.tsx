@@ -1,5 +1,5 @@
 import { Modal, Box, Typography, Button } from '@mui/material';
-import { doPatch } from '@utils/APIRequest';
+import { doPatch, doPost } from '@utils/APIRequest';
 import {
   Map,
   Marker,
@@ -91,6 +91,8 @@ export default function EditGPSModal({ onClose, value }: EditGPSModalProps) {
 
     // Close the modal on success
     if (response.success) {
+      // Update fee for orders associated with the location record
+      await doPost(`http://localhost:3000/api/location-records/${value?._id}/update-fee`, {});
       handleClose();
       window.location.reload();
     }
@@ -103,7 +105,6 @@ export default function EditGPSModal({ onClose, value }: EditGPSModalProps) {
           <Typography variant="h6" align="center">
             Edit GPS
           </Typography>
-          {/* <APIProvider apiKey={API_KEY}> */}
           <Map
             style={{ width: '30vw', height: '30vh' }}
             defaultCenter={position}
@@ -115,7 +116,6 @@ export default function EditGPSModal({ onClose, value }: EditGPSModalProps) {
           >
             <Marker position={position} />
           </Map>
-          {/* </APIProvider> */}
           <Box display="flex" justifyContent="space-between">
             <Typography variant="body1" fontWeight={'bold'}>
               Địa chỉ:

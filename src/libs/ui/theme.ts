@@ -76,6 +76,9 @@ const theme = createTheme({
         root: {
           padding: '12px',
           textTransform: 'inherit',
+          '&:focus': {
+            outline: 'none',
+          },
           '&.Mui-disabled': {
             background: colors.green800,
             color: colors.black100,

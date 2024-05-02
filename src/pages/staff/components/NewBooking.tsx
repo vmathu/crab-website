@@ -7,10 +7,8 @@ import {
   createFilterOptions,
   Button,
   debounce,
-  Snackbar,
-  SnackbarContent,
 } from '@mui/material';
-import { green, red } from '@mui/material/colors';
+import { Notification } from '@src/libs/ui/components';
 import { doPost } from '@utils/APIRequest';
 import * as React from 'react';
 import { doGet } from '@utils/APIRequest';
@@ -60,8 +58,12 @@ export default function NewBookingComponent() {
     // Get the values from the form
     const name = (document.getElementById('name') as HTMLInputElement).value;
     const phone = (document.getElementById('phone') as HTMLInputElement).value;
-    const vehicleValue = (document.getElementById('vehicle') as HTMLInputElement).value;
-    const vehicle = defaultVehicles.find((item) => item.value === vehicleValue)?.key;
+    const vehicleValue = (
+      document.getElementById('vehicle') as HTMLInputElement
+    ).value;
+    const vehicle = defaultVehicles.find(
+      (item) => item.value === vehicleValue,
+    )?.key;
     const pick_up = {
       _id: pickupValue?._id || '',
       address: pickupValue?.address || '',
@@ -80,7 +82,10 @@ export default function NewBookingComponent() {
     };
 
     // Send the data to the server
-    const response = await doPost('http://localhost:3000/api/staff/bookings', reqData);
+    const response = await doPost(
+      'http://localhost:3000/api/staff/bookings',
+      reqData,
+    );
 
     if (response.success) {
       setSnackBarStatus(true);
@@ -110,32 +115,28 @@ export default function NewBookingComponent() {
 
   return (
     <Grid item xs={4} lg={9}>
-      <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
-        {snackBarStatus ? (
-          <SnackbarContent
-            sx={{ backgroundColor: green[600] }}
-            message="Booking created successfully"
-          />
-        ) : (
-          <SnackbarContent
-            sx={{ backgroundColor: red[600] }}
-            message="Failed to create booking"
-          />
-        )}
-      </Snackbar>
+      <Notification
+        snackbarProps={{ open, onClose: handleClose }}
+        alertProps={{ severity: snackBarStatus ? 'success' : 'error' }}
+        message={
+          snackBarStatus
+            ? 'Booking created successfully'
+            : 'Failed to create booking'
+        }
+      />
       <form>
         <Stack spacing={2} padding={2}>
-          <Typography variant="h5" align="left">
+          <Typography variant='h5' align='left'>
             Customer's Information
           </Typography>
 
-          <TextField id="name" label="Name" variant="outlined" />
-          <TextField id="phone" label="Phone Number" variant="outlined" />
+          <TextField id='name' label='Name' variant='outlined' />
+          <TextField id='phone' label='Phone Number' variant='outlined' />
           <Autocomplete
-            id="vehicle"
+            id='vehicle'
             options={defaultVehicles}
             getOptionLabel={(option) => option.value}
-            renderInput={(params) => <TextField {...params} label="Vehicle" />}
+            renderInput={(params) => <TextField {...params} label='Vehicle' />}
             defaultValue={defaultVehicles[0]}
           />
           <Autocomplete
@@ -143,7 +144,9 @@ export default function NewBookingComponent() {
             onInputChange={async (_, newValue) => {
               // Debounce function
               const debouncedFetch = debounce(async () => {
-                const rawData = await doGet(`http://localhost:3000/api/location-records?address=${newValue}`);
+                const rawData = await doGet(
+                  `http://localhost:3000/api/location-records?address=${newValue}`,
+                );
                 setPickUpData(formatLocationData(rawData.data.data));
               }, 500);
 
@@ -184,7 +187,7 @@ export default function NewBookingComponent() {
             selectOnFocus
             clearOnBlur
             handleHomeEndKeys
-            id="pick-up"
+            id='pick-up'
             options={pickUpData}
             getOptionLabel={(option) => {
               // Value selected with enter, right from the input
@@ -204,7 +207,7 @@ export default function NewBookingComponent() {
               </li>
             )}
             freeSolo
-            renderInput={(params) => <TextField {...params} label="Pickup" />}
+            renderInput={(params) => <TextField {...params} label='Pickup' />}
           />
           <Autocomplete
             value={destinationValue}
@@ -254,7 +257,7 @@ export default function NewBookingComponent() {
             selectOnFocus
             clearOnBlur
             handleHomeEndKeys
-            id="destination"
+            id='destination'
             options={destinationData}
             getOptionLabel={(option) => {
               // Value selected with enter, right from the input
@@ -275,10 +278,10 @@ export default function NewBookingComponent() {
             )}
             freeSolo
             renderInput={(params) => (
-              <TextField {...params} label="Destination" />
+              <TextField {...params} label='Destination' />
             )}
           />
-          <Button variant="contained" onClick={handleSubmit}>
+          <Button variant='contained' onClick={handleSubmit}>
             Submit
           </Button>
         </Stack>
