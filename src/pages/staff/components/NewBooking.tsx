@@ -96,6 +96,13 @@ export default function NewBookingComponent() {
       (document.getElementById('phone') as HTMLInputElement).value = '';
       setPickupValue(null);
       setDestinationValue(null);
+      
+      // Update fee for orders associated with the location record
+      if (pickupValue?._id)
+        await doPost(`http://localhost:3000/api/location-records/${pickupValue?._id}/update-fee`, {});
+
+      if (destinationValue?._id)
+        await doPost(`http://localhost:3000/api/location-records/${destinationValue?._id}/update-fee`, {});
     } else {
       setSnackBarStatus(false);
       setOpen(true);
