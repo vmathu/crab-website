@@ -34,7 +34,7 @@ export default function SignIn() {
     >
       <Stack spacing={2} padding={2} sx={{ width: '25%' }}>
         <Typography variant="h4">
-          Staff Portal
+          Workspace Portal
         </Typography>
         <TextField id="phone" label="Phone number" variant="outlined" />
         <TextField id="password" label="Password" variant="outlined" type="password" />
