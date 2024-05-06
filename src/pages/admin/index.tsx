@@ -1,35 +1,31 @@
-import {
-  // useTheme,
-  // useMediaQuery,
-  Typography,
-} from '@mui/material';
+import Typography from '@mui/material/Typography';
 import { SideBar } from '@src/libs/ui/components/Sidebar';
 import { styled } from '@mui/material/styles';
+import { ISideBarItem } from '@src/libs/ui/components/SidebarItem';
+import PeopleAltRounded from '@mui/icons-material/PeopleAltRounded';
+import EqualizerRoundedIcon from '@mui/icons-material/EqualizerRounded';
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { colors } from '@src/libs/ui';
-import { ISideBarItem } from '@src/libs/ui/components/SidebarItem';
-import AddIcCallRoundedIcon from '@mui/icons-material/AddIcCallRounded';
-import LocationOnRoundedIcon from '@mui/icons-material/LocationOnRounded';
-import { useState } from 'react';
 import Paper from '@mui/material/Paper';
+
+const SideBarItems: ISideBarItem[] = [
+  {
+    key: 'members',
+    label: 'Người dùng',
+    icon: <PeopleAltRounded />,
+  },
+  {
+    key: 'statistics',
+    label: 'Tình hình kinh doanh',
+    icon: <EqualizerRoundedIcon />,
+  },
+];
 
 const Section = styled('section')(({ theme }) => ({
   padding: theme.spacing(3, 3, 3),
   width: '100%',
 }));
-
-const SideBarItems: ISideBarItem[] = [
-  {
-    key: 'new-booking',
-    label: 'New Booking',
-    icon: <AddIcCallRoundedIcon />,
-  },
-  {
-    key: 'resolve-gps',
-    label: 'Resolve GPS',
-    icon: <LocationOnRoundedIcon />,
-  },
-];
 
 const StyledPaper = styled(Paper)({
   display: 'flex',
@@ -38,20 +34,16 @@ const StyledPaper = styled(Paper)({
   minHeight: 'inherit',
 });
 
-export default function Staff({ children }: { children: React.ReactNode }) {
+export default function Admin({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const key = location.pathname.split('/').pop();
-  // const theme = useTheme();
-  // const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const [active, setActive] = useState(key || 'members');
   const navigate = useNavigate();
-  const [active, setActive] = useState(key || 'new-booking');
-
   const handleClick = (key: string) => {
     if (key === active) return;
-    navigate(`/staff/${key}`);
+    navigate(`/admin/${key}`);
     setActive(key);
   };
-
   return (
     <>
       <SideBar
@@ -64,7 +56,7 @@ export default function Staff({ children }: { children: React.ReactNode }) {
               color: colors.green900,
             }}
           >
-            Staff Workspace
+            Admin
           </Typography>
         }
         active={active}

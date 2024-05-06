@@ -4,20 +4,27 @@ import { getExpFromJWT } from '@utils/JWT';
 import { setCookie } from '@utils/Cookie';
 
 export default function SignIn() {
-    const handleSignIn = async () => {
-        const reqData = {
-            phone: (document.getElementById('phone') as HTMLInputElement).value,
-            password: (document.getElementById('password') as HTMLInputElement).value,
-            role: "staff"
-        }
+  const handleSignIn = async () => {
+    const reqData = {
+      phone: (document.getElementById('phone') as HTMLInputElement).value,
+      password: (document.getElementById('password') as HTMLInputElement).value,
+      role: 'staff',
+    };
 
-        const response = await doPost('http://localhost:3000/api/accounts/sign-in', reqData);
-        
-        if (response.success) {
-            setCookie('token', response.data.token, getExpFromJWT(response.data.token));
-            window.location.href = '/staff/new-booking';
-        }
+    const response = await doPost(
+      'http://localhost:3000/api/accounts/sign-in',
+      reqData,
+    );
+
+    if (response.success) {
+      setCookie(
+        'token',
+        response.data.token,
+        getExpFromJWT(response.data.token),
+      );
+      window.location.href = '/staff/new-booking';
     }
+  };
 
   return (
     <Grid
@@ -33,12 +40,19 @@ export default function SignIn() {
       }}
     >
       <Stack spacing={2} padding={2} sx={{ width: '25%' }}>
-        <Typography variant="h4">
+        <Typography variant='h4' align='center'>
           Workspace Portal
         </Typography>
-        <TextField id="phone" label="Phone number" variant="outlined" />
-        <TextField id="password" label="Password" variant="outlined" type="password" />
-        <Button variant="contained" onClick={handleSignIn}>Sign In</Button>
+        <TextField id='phone' label='Phone number' variant='outlined' />
+        <TextField
+          id='password'
+          label='Password'
+          variant='outlined'
+          type='password'
+        />
+        <Button variant='contained' onClick={handleSignIn}>
+          Sign In
+        </Button>
       </Stack>
     </Grid>
   );

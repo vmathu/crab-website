@@ -96,13 +96,19 @@ export default function NewBookingComponent() {
       (document.getElementById('phone') as HTMLInputElement).value = '';
       setPickupValue(null);
       setDestinationValue(null);
-      
+
       // Update fee for orders associated with the location record
       if (pickupValue?._id)
-        await doPost(`http://localhost:3000/api/location-records/${pickupValue?._id}/update-fee`, {});
+        await doPost(
+          `http://localhost:3000/api/location-records/${pickupValue?._id}/update-fee`,
+          {},
+        );
 
       if (destinationValue?._id)
-        await doPost(`http://localhost:3000/api/location-records/${destinationValue?._id}/update-fee`, {});
+        await doPost(
+          `http://localhost:3000/api/location-records/${destinationValue?._id}/update-fee`,
+          {},
+        );
     } else {
       setSnackBarStatus(false);
       setOpen(true);
@@ -132,9 +138,9 @@ export default function NewBookingComponent() {
         }
       />
       <form>
-        <Stack spacing={2} padding={2}>
-          <Typography variant='h5' align='left'>
-            Customer's Information
+        <Stack spacing={2}>
+          <Typography variant='h6' fontWeight='600'>
+            Customer&apos;s Information
           </Typography>
 
           <TextField id='name' label='Name' variant='outlined' />
