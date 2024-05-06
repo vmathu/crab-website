@@ -128,11 +128,15 @@ const theme = createTheme({
       variants: [
         {
           props: { color: 'inherit' },
-          style: { color: colors.white },
+          style: { color: colors.green900 },
         },
         {
           props: { color: 'disabled' },
           style: { color: colors.black100, '&:hover': { color: colors.white } },
+        },
+        {
+          props: { color: 'primary' },
+          style: { color: colors.green500 },
         },
       ],
       styleOverrides: {
@@ -176,7 +180,6 @@ const theme = createTheme({
     MuiListItemText: {
       styleOverrides: {
         root: {
-          color: colors.white,
           margin: 0,
         },
       },
@@ -207,8 +210,6 @@ const theme = createTheme({
     MuiList: {
       styleOverrides: {
         root: {
-          background: colors.green800,
-          color: 'white',
           fontFamily: '"Be Vietnam Pro", san-serif',
           fontSize: '16px',
         },
@@ -218,7 +219,7 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           '&.Mui-selected': {
-            background: colors.green700,
+            background: colors.green50,
           },
         },
       },
@@ -345,12 +346,22 @@ const theme = createTheme({
         },
       ],
     },
+    MuiPaper: {
+      defaultProps: {
+        elevation: 0,
+      },
+      variants: [
+        {
+          props: { variant: 'section' },
+          style: {
+            borderRadius: '0.75rem',
+            padding: '1.5rem',
+          },
+        },
+      ],
+    },
   },
 });
-
-type CustomTheme = {
-  [Key in keyof typeof theme]: (typeof theme)[Key];
-};
 
 declare module '@mui/material/Button' {
   interface ButtonPropsVariantOverrides {
@@ -359,5 +370,21 @@ declare module '@mui/material/Button' {
 }
 
 declare module '@mui/material/';
+
+declare module '@mui/material/styles' {
+  interface PaperVariants {
+    section: React.CSSProperties;
+  }
+
+  interface PaperVariantsOptions {
+    section?: React.CSSProperties;
+  }
+}
+
+declare module '@mui/material/Paper' {
+  interface PaperPropsVariantOverrides {
+    section: true;
+  }
+}
 
 export default theme;

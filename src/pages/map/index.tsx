@@ -19,7 +19,17 @@ function App() {
   }, []);
 
   if (loading) {
-    return <CircularProgress />;
+    return (
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          width: '100%',
+        }}
+      >
+        <CircularProgress />
+      </div>
+    );
   }
 
   return (

@@ -1,16 +1,9 @@
-import {
-  Grid,
-  Table,
-  TableHead,
-  TableCell,
-  TableBody,
-  TableRow,
-  Typography,
-} from '@mui/material';
-import * as React from 'react';
+import { Typography } from '@mui/material';
 import EditGPSModal from './EditGPSModal';
 import { APIProvider } from '@vis.gl/react-google-maps';
 import { doGet } from '@utils/APIRequest';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { useEffect, useState } from 'react';
 
 interface LocationValueProps {
   _id: string;
@@ -30,17 +23,30 @@ function formatLocationData(rawData: any[]): LocationValueProps[] {
   return formattedData;
 }
 
-export default function ResolveGPSComponent() {
-  const [unresolvedData, setUnresolvedData] = React.useState<
-    LocationValueProps[] | null
-  >(null);
-  const [selectedData, setSelectedData] =
-    React.useState<LocationValueProps | null>(null);
+const columns: GridColDef[] = [
+  { field: 'id', headerName: 'No.', width: 70 },
+  { field: 'address', headerName: 'Address', width: 330 },
+];
 
-  React.useEffect(() => {
+function DataTable({
+  onRowClick,
+}: {
+  onRowClick: (item: LocationValueProps) => void;
+}) {
+  const [rows, setRows] = useState<LocationValueProps[]>([]);
+  useEffect(() => {
     const fetchData = async () => {
-      const response = await doGet('http://localhost:3000/api/location-records/unresolved-list');
-      setUnresolvedData(formatLocationData(response.data.data));
+      const response = await doGet(
+        'http://localhost:3000/api/location-records/unresolved-list',
+      );
+      const formattedData = formatLocationData(response.data.data);
+      const dataWithIds = formattedData.map(
+        (item: LocationValueProps, index: number) => ({
+          id: index + 1,
+          ...item,
+        }),
+      );
+      setRows(dataWithIds);
     };
 
     // Call fetchData immediately
@@ -53,7 +59,31 @@ export default function ResolveGPSComponent() {
     return () => clearInterval(intervalId);
   }, []);
 
-  const [isModalOpen, setIsModalOpen] = React.useState(false); // Add this line
+  return (
+    <div style={{ height: 400, width: '100%' }}>
+      <DataGrid
+        rows={rows}
+        columns={columns}
+        initialState={{
+          pagination: {
+            paginationModel: { page: 0, pageSize: 5 },
+          },
+        }}
+        pageSizeOptions={[5, 10]}
+        onRowClick={(row) => {
+          onRowClick(row.row as LocationValueProps);
+        }}
+      />
+    </div>
+  );
+}
+
+export default function ResolveGPSComponent() {
+  const [selectedData, setSelectedData] = useState<LocationValueProps | null>(
+    null,
+  );
+
+  const [isModalOpen, setIsModalOpen] = useState(false); // Add this line
 
   const handleOpenModal = (item: LocationValueProps) => {
     setIsModalOpen(true);
@@ -67,35 +97,16 @@ export default function ResolveGPSComponent() {
   const API_KEY = 'AIzaSyAe_FAtgZw3zJZN9RySh-4WMVHzXruyuaA';
 
   return (
-    <Grid item xs={4} lg={9}>
-      <Typography variant="h5" align="left" padding={2}>
+    <>
+      <Typography variant='h6' fontWeight='600'>
         Unresolved GPS
       </Typography>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>
-              <Typography variant="h6">No.</Typography>
-            </TableCell>
-            <TableCell align="center">
-              <Typography variant="h6">Address</Typography>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {unresolvedData?.map((item, index) => (
-            <TableRow key={item._id} onClick={() => handleOpenModal(item)}>
-              <TableCell>{index + 1}</TableCell>
-              <TableCell align="center">{item.address}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <DataTable onRowClick={handleOpenModal} />
       {isModalOpen && (
         <APIProvider apiKey={API_KEY}>
           <EditGPSModal onClose={handleCloseModal} value={selectedData} />
         </APIProvider>
       )}
-    </Grid>
+    </>
   );
 }
