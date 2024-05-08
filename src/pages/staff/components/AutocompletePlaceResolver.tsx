@@ -1,4 +1,10 @@
-import { Autocomplete, AutocompleteChangeReason, TextField, createFilterOptions, debounce } from '@mui/material';
+import {
+  Autocomplete,
+  AutocompleteChangeReason,
+  TextField,
+  createFilterOptions,
+  debounce,
+} from '@mui/material';
 import React from 'react';
 
 function formatLocationData(rawData: any[]) {
@@ -32,7 +38,11 @@ export interface Props {
 
 const filter = createFilterOptions<LocationValueProps>();
 
-export default function AutocompletePlaceResolver({ label, value, onChange }: Props) {
+export default function AutocompletePlaceResolver({
+  label,
+  value,
+  onChange,
+}: Props) {
   // const [destinationValue, setDestinationValue] =
   //   React.useState<LocationValueProps | null>(null);
 
@@ -47,9 +57,9 @@ export default function AutocompletePlaceResolver({ label, value, onChange }: Pr
         if (newValue.length == 0) return;
         // Debounce function
         const debouncedFetch = debounce(async () => {
-          const rawData = await fetch(`http://localhost:3000/api/location-records?address=${newValue}`).then((res) =>
-            res.json(),
-          );
+          const rawData = await fetch(
+            `http://localhost:3000/api/location-records?address=${newValue}`,
+          ).then((res) => res.json());
           setDestinationData(formatLocationData(rawData.data.data));
         }, 500);
 
@@ -62,7 +72,9 @@ export default function AutocompletePlaceResolver({ label, value, onChange }: Pr
 
         const { inputValue } = params;
         // Suggest the creation of a new value
-        const isExisting = options.some((option) => inputValue === option.address);
+        const isExisting = options.some(
+          (option) => inputValue === option.address,
+        );
         if (inputValue !== '' && !isExisting) {
           filtered.push({
             inputValue,

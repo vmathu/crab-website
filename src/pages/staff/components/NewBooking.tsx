@@ -1,4 +1,11 @@
-import { Grid, Typography, TextField, Stack, Autocomplete, Button } from '@mui/material';
+import {
+  Grid,
+  Typography,
+  TextField,
+  Stack,
+  Autocomplete,
+  Button,
+} from '@mui/material';
 import { Notification } from '@src/libs/ui/components';
 import { doPost } from '@utils/APIRequest';
 import * as React from 'react';
@@ -18,8 +25,10 @@ interface VehicleProps {
 }
 
 export default function NewBookingComponent() {
-  const [pickupValue, setPickupValue] = React.useState<LocationValueProps | null>(null);
-  const [destinationValue, setDestinationValue] = React.useState<LocationValueProps | null>(null);
+  const [pickupValue, setPickupValue] =
+    React.useState<LocationValueProps | null>(null);
+  const [destinationValue, setDestinationValue] =
+    React.useState<LocationValueProps | null>(null);
 
   const defaultVehicles: VehicleProps[] = [
     { key: 'motorbike', value: 'Motorbike' },
@@ -30,8 +39,12 @@ export default function NewBookingComponent() {
     // Get the values from the form
     const name = (document.getElementById('name') as HTMLInputElement).value;
     const phone = (document.getElementById('phone') as HTMLInputElement).value;
-    const vehicleValue = (document.getElementById('vehicle') as HTMLInputElement).value;
-    const vehicle = defaultVehicles.find((item) => item.value === vehicleValue)?.key;
+    const vehicleValue = (
+      document.getElementById('vehicle') as HTMLInputElement
+    ).value;
+    const vehicle = defaultVehicles.find(
+      (item) => item.value === vehicleValue,
+    )?.key;
     const pick_up = {
       _id: pickupValue?._id || '',
       address: pickupValue?.address || '',
@@ -51,7 +64,10 @@ export default function NewBookingComponent() {
     };
 
     // Send the data to the server
-    const response = await doPost('http://localhost:3000/api/staff/bookings', reqData);
+    const response = await doPost(
+      'http://localhost:3000/api/staff/bookings',
+      reqData,
+    );
 
     if (response.success) {
       setSnackBarStatus(true);
@@ -65,10 +81,16 @@ export default function NewBookingComponent() {
 
       // Update fee for orders associated with the location record
       if (pickupValue?._id)
-        await doPost(`http://localhost:3000/api/location-records/${pickupValue?._id}/update-fee`, {});
+        await doPost(
+          `http://localhost:3000/api/location-records/${pickupValue?._id}/update-fee`,
+          {},
+        );
 
       if (destinationValue?._id)
-        await doPost(`http://localhost:3000/api/location-records/${destinationValue?._id}/update-fee`, {});
+        await doPost(
+          `http://localhost:3000/api/location-records/${destinationValue?._id}/update-fee`,
+          {},
+        );
     } else {
       setSnackBarStatus(false);
       setOpen(true);
@@ -91,7 +113,11 @@ export default function NewBookingComponent() {
       <Notification
         snackbarProps={{ open, onClose: handleClose }}
         alertProps={{ severity: snackBarStatus ? 'success' : 'error' }}
-        message={snackBarStatus ? 'Booking created successfully' : 'Failed to create booking'}
+        message={
+          snackBarStatus
+            ? 'Booking created successfully'
+            : 'Failed to create booking'
+        }
       />
       <form>
         <Stack spacing={2}>

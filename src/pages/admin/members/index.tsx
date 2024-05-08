@@ -26,7 +26,9 @@ import { useEffect, useState } from 'react';
 
 interface EditToolbarProps {
   setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
-  setRowModesModel: (newModel: (oldModel: GridRowModesModel) => GridRowModesModel) => void;
+  setRowModesModel: (
+    newModel: (oldModel: GridRowModesModel) => GridRowModesModel,
+  ) => void;
   rows: GridRowModel[];
 }
 
@@ -35,7 +37,10 @@ function EditToolbar(props: EditToolbarProps) {
 
   const handleClick = () => {
     const id = Math.max(...rows.map((row) => row.id), 0) + 1;
-    setRows((oldRows) => [...oldRows, { id, name: '', phone: '', role: '', isNew: true }]);
+    setRows((oldRows) => [
+      ...oldRows,
+      { id, name: '', phone: '', role: '', isNew: true },
+    ]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
       [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
@@ -145,11 +150,15 @@ function DataTable() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await doGet('http://localhost:3000/api/accounts/members');
-      const dataWithIds = response.data.data.map((item: any, index: number) => ({
-        id: index + 1,
-        ...item,
-      }));
+      const response = await doGet(
+        'http://localhost:3000/api/accounts/members',
+      );
+      const dataWithIds = response.data.data.map(
+        (item: any, index: number) => ({
+          id: index + 1,
+          ...item,
+        }),
+      );
       setRows(dataWithIds);
     };
 
@@ -162,12 +171,15 @@ function DataTable() {
 
   const processRowUpdate = async (newRow: GridRowModel) => {
     if (newRow.isNew) {
-      const response = await doPost('http://localhost:3000/api/accounts/sign-up', {
-        name: newRow.name,
-        phone: newRow.phone,
-        role: newRow.role,
-        password: '1',
-      });
+      const response = await doPost(
+        'http://localhost:3000/api/accounts/sign-up',
+        {
+          name: newRow.name,
+          phone: newRow.phone,
+          role: newRow.role,
+          password: '1',
+        },
+      );
       const updatedRow = {
         ...newRow,
         _id: response.data.data.id,
@@ -186,11 +198,18 @@ function DataTable() {
 
     const updatedRow = { ...newRow, isNew: false };
 
-    setRows(rows.map((row: GridRowModel) => (row.id === newRow.id ? updatedRow : row)));
+    setRows(
+      rows.map((row: GridRowModel) =>
+        row.id === newRow.id ? updatedRow : row,
+      ),
+    );
     return updatedRow;
   };
 
-  const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
+  const handleRowEditStop: GridEventListener<'rowEditStop'> = (
+    params,
+    event,
+  ) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
       event.defaultMuiPrevented = true;
     }

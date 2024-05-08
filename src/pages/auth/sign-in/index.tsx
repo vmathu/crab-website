@@ -1,4 +1,11 @@
-import { Grid, Typography, TextField, Stack, Button, Snackbar } from '@mui/material';
+import {
+  Grid,
+  Typography,
+  TextField,
+  Stack,
+  Button,
+  Snackbar,
+} from '@mui/material';
 import { useState } from 'react';
 import { doPost } from '@utils/APIRequest';
 import { getExpFromJWT } from '@utils/JWT';
@@ -22,10 +29,17 @@ export default function SignIn() {
       role: 'staff',
     };
 
-    const response = await doPost('http://localhost:3000/api/accounts/sign-in', reqData);
+    const response = await doPost(
+      'http://localhost:3000/api/accounts/sign-in',
+      reqData,
+    );
 
     if (response.success) {
-      setCookie('token', response.data.token, getExpFromJWT(response.data.token));
+      setCookie(
+        'token',
+        response.data.token,
+        getExpFromJWT(response.data.token),
+      );
       window.location.href = '/staff/new-booking';
     } else {
       setMessage(response.message);
@@ -53,14 +67,30 @@ export default function SignIn() {
           <Typography variant='h4' align='center'>
             Workspace Portal
           </Typography>
-          <TextField id='phone' label='Phone number' variant='outlined' required />
-          <TextField id='password' label='Password' variant='outlined' type='password' required />
+          <TextField
+            id='phone'
+            label='Phone number'
+            variant='outlined'
+            required
+          />
+          <TextField
+            id='password'
+            label='Password'
+            variant='outlined'
+            type='password'
+            required
+          />
           <Button variant='contained' type='submit'>
             Sign In
           </Button>
         </Stack>
       </Grid>
-      <Snackbar open={open} autoHideDuration={2500} onClose={handleClose} message={message} />
+      <Snackbar
+        open={open}
+        autoHideDuration={2500}
+        onClose={handleClose}
+        message={message}
+      />
     </>
   );
 }
