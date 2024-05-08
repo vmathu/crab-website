@@ -108,6 +108,7 @@ function DataTable() {
         if (isInEditMode) {
           return [
             <GridActionsCellItem
+              // key={'save_' + id}
               icon={<SaveRounded />}
               label='Save'
               sx={{
@@ -116,6 +117,7 @@ function DataTable() {
               onClick={handleSaveClick(id)}
             />,
             <GridActionsCellItem
+              key={'cancel' + id}
               icon={<CloseRounded />}
               label='Cancel'
               className='textPrimary'
@@ -127,6 +129,7 @@ function DataTable() {
 
         return [
           <GridActionsCellItem
+            key={'edit' + id}
             icon={<EditRounded />}
             label='Edit'
             className='textPrimary'
@@ -134,6 +137,7 @@ function DataTable() {
             color='inherit'
           />,
           // <GridActionsCellItem
+          //   key={'delete' + id}
           //   icon={<DeleteOutlineRounded />}
           //   label='Delete'
           //   onClick={handleDeleteClick(id)}

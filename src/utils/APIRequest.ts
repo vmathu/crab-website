@@ -1,4 +1,4 @@
-import { getCookie } from "./Cookie";
+import { getCookie } from './Cookie';
 
 async function doPost(url: string, data: any) {
   const token = getCookie('token') || '';

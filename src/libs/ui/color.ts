@@ -48,5 +48,5 @@ export default {
   black300: '#545454',
   black400: '#333333',
   black500: '#000000',
-  white: '#FFFFFF'
-}
+  white: '#FFFFFF',
+};

@@ -20,7 +20,7 @@ interface EditGPSModalProps {
 }
 
 const style = {
-  position: 'absolute' as 'absolute',
+  position: 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
@@ -69,7 +69,7 @@ export default function EditGPSModal({ onClose, value }: EditGPSModalProps) {
         setPosition({ lat: newLocation.lat(), lng: newLocation.lng() });
       }
     });
-  }, [geocodingService]);
+  }, [geocodingService, map, value?.address]);
 
   const handleNewLocation = (event: MapMouseEvent) => {
     setPosition(event.detail.latLng as { lat: number; lng: number });
@@ -81,28 +81,34 @@ export default function EditGPSModal({ onClose, value }: EditGPSModalProps) {
       lat: position.lat,
       long: position.lng,
     };
-    
+
     const data = {
       address: value?.address,
       location: currPosition,
-    }
+    };
 
-    const response = await doPatch(`http://localhost:3000/api/location-records/${value?._id}`, data);
+    const response = await doPatch(
+      `http://localhost:3000/api/location-records/${value?._id}`,
+      data,
+    );
 
     // Close the modal on success
     if (response.success) {
       // Update fee for orders associated with the location record
-      await doPost(`http://localhost:3000/api/location-records/${value?._id}/update-fee`, {});
+      await doPost(
+        `http://localhost:3000/api/location-records/${value?._id}/update-fee`,
+        {},
+      );
       handleClose();
       window.location.reload();
     }
-  }
+  };
 
   return (
     <div>
       <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
-          <Typography variant="h6" align="center">
+          <Typography variant='h6' align='center'>
             Edit GPS
           </Typography>
           <Map
@@ -116,13 +122,15 @@ export default function EditGPSModal({ onClose, value }: EditGPSModalProps) {
           >
             <Marker position={position} />
           </Map>
-          <Box display="flex" justifyContent="space-between">
-            <Typography variant="body1" fontWeight={'bold'}>
+          <Box display='flex' justifyContent='space-between'>
+            <Typography variant='body1' fontWeight={'bold'}>
               Địa chỉ:
             </Typography>
-            <Typography variant="body1">{value?.address}</Typography>
+            <Typography variant='body1'>{value?.address}</Typography>
           </Box>
-          <Button variant="outlined" onClick={handleUpdateGPS}>Update GPS Record</Button>
+          <Button variant='outlined' onClick={handleUpdateGPS}>
+            Update GPS Record
+          </Button>
         </Box>
       </Modal>
     </div>

@@ -16,7 +16,7 @@ type NotificationProps = {
 type TransitionProps = Omit<SlideProps, 'direction'>;
 
 function TransitionRight(props: TransitionProps) {
-  return <Slide {...props} direction="left" />;
+  return <Slide {...props} direction='left' />;
 }
 
 export function Notification({
