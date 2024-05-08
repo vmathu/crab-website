@@ -20,7 +20,7 @@ function NavigationHandler() {
     } else if (!isCookieValid) {
       navigate('/sign-in');
     }
-  });
+  }, [navigate]);
 
   return null;
 }

@@ -1,18 +1,8 @@
 import { Modal, Box, Typography, Button } from '@mui/material';
 import { doPatch, doPost } from '@utils/APIRequest';
-import {
-  Map,
-  Marker,
-  useMap,
-  useMapsLibrary,
-  MapMouseEvent,
-} from '@vis.gl/react-google-maps';
+import { Map, Marker, useMap, useMapsLibrary, MapMouseEvent } from '@vis.gl/react-google-maps';
 import * as React from 'react';
-
-interface LocationValueProps {
-  _id: string;
-  address: string;
-}
+import { LocationValueProps } from './AutocompletePlaceResolver';
 
 interface EditGPSModalProps {
   onClose: () => void;
@@ -37,6 +27,8 @@ export default function EditGPSModal({ onClose, value }: EditGPSModalProps) {
   const [open, setOpen] = React.useState(true); // Open the modal by default
   const [position, setPosition] = React.useState({ lat: 0, lng: 0 });
 
+  const [destinationValue, setDestinationValue] = React.useState<LocationValueProps | null>(value);
+
   const handleClose = () => {
     setOpen(false); // Close the modal
     onClose(); // Call the onClose prop
@@ -45,8 +37,7 @@ export default function EditGPSModal({ onClose, value }: EditGPSModalProps) {
   const geocodingLibrary = useMapsLibrary('geocoding');
   const map = useMap();
 
-  const [geocodingService, setGeocodingService] =
-    React.useState<google.maps.Geocoder | null>(null);
+  const [geocodingService, setGeocodingService] = React.useState<google.maps.Geocoder | null>(null);
 
   React.useEffect(() => {
     if (!geocodingLibrary || !map) {
@@ -67,12 +58,29 @@ export default function EditGPSModal({ onClose, value }: EditGPSModalProps) {
         map.setZoom(20);
 
         setPosition({ lat: newLocation.lat(), lng: newLocation.lng() });
+        setDestinationValue({ address: results[0].formatted_address });
       }
     });
   }, [geocodingService, map, value?.address]);
 
   const handleNewLocation = (event: MapMouseEvent) => {
-    setPosition(event.detail.latLng as { lat: number; lng: number });
+    if (!geocodingService) return;
+
+    const latlng = event.detail.latLng;
+    geocodingService
+      .geocode({ location: latlng })
+      .then((response) => {
+        console.log('handler: ', response);
+        if (response.results[0]) {
+          setPosition(latlng as { lat: number; lng: number });
+          setDestinationValue({
+            address: response.results[0].formatted_address,
+          });
+        }
+      })
+      .catch((e) => window.alert('Geocoder failed due to: ' + e));
+
+    console.log(event.detail.latLng);
   };
 
   const handleUpdateGPS = async () => {
@@ -83,22 +91,16 @@ export default function EditGPSModal({ onClose, value }: EditGPSModalProps) {
     };
 
     const data = {
-      address: value?.address,
+      address: destinationValue?.address,
       location: currPosition,
     };
 
-    const response = await doPatch(
-      `http://localhost:3000/api/location-records/${value?._id}`,
-      data,
-    );
+    const response = await doPatch(`http://localhost:3000/api/location-records/${value?._id}`, data);
 
     // Close the modal on success
     if (response.success) {
       // Update fee for orders associated with the location record
-      await doPost(
-        `http://localhost:3000/api/location-records/${value?._id}/update-fee`,
-        {},
-      );
+      await doPost(`http://localhost:3000/api/location-records/${value?._id}/update-fee`, {});
       handleClose();
       window.location.reload();
     }
@@ -124,9 +126,15 @@ export default function EditGPSModal({ onClose, value }: EditGPSModalProps) {
           </Map>
           <Box display='flex' justifyContent='space-between'>
             <Typography variant='body1' fontWeight={'bold'}>
-              Địa chỉ:
+              Địa chỉ ghi nhận:
             </Typography>
             <Typography variant='body1'>{value?.address}</Typography>
+          </Box>
+          <Box>
+            <Typography variant='body1' fontWeight={'bold'}>
+              Địa chỉ chính thức:
+            </Typography>
+            <Typography variant='body1'>{destinationValue?.address}</Typography>
           </Box>
           <Button variant='outlined' onClick={handleUpdateGPS}>
             Update GPS Record
