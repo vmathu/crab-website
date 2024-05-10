@@ -6,14 +6,21 @@ import {
   Button,
   Snackbar,
 } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { doPost } from '@utils/APIRequest';
 import { getExpFromJWT } from '@utils/JWT';
-import { setCookie } from '@utils/Cookie';
+import { getRoleFromCookie, setCookie } from '@utils/Cookie';
 
 export default function SignIn() {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    const role = getRoleFromCookie('token');
+    if (role) {
+      window.location.href = `/${role}`;
+    }
+  }, []);
 
   const handleClose = () => {
     setOpen(false);

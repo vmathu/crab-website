@@ -1,3 +1,5 @@
+import { jwtDecode } from 'jwt-decode';
+
 function setCookie(name: string, value: string, time: number) {
   let expires = '';
   if (time) {
@@ -16,7 +18,7 @@ function getCookie(name: string) {
     while (c.charAt(0) == ' ') c = c.substring(1, c.length);
     if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
   }
-  return null;
+  return '';
 }
 
 function eraseCookie(name: string) {
@@ -25,10 +27,16 @@ function eraseCookie(name: string) {
 
 function checkCookie(name: string) {
   const cookie = getCookie(name);
-  if (cookie != null) {
+  if (cookie) {
     return true;
   }
   return false;
 }
 
-export { setCookie, getCookie, eraseCookie, checkCookie };
+function getRoleFromCookie(name: string) {
+  const token = getCookie(name);
+  const decoded = checkCookie(name) ? (jwtDecode(token) as any) : null;
+  return decoded ? decoded.role : null;
+}
+
+export { setCookie, getCookie, eraseCookie, checkCookie, getRoleFromCookie };
