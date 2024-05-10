@@ -141,7 +141,7 @@ export default function Statistics() {
   return (
     <>
       <Typography variant='h6' fontWeight='600'>
-        Tình hình kinh doanh
+        Business Report
       </Typography>
       <Grid container spacing={2}>
         <Grid item xs={6}>

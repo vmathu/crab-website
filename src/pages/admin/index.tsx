@@ -12,12 +12,12 @@ import Paper from '@mui/material/Paper';
 const SideBarItems: ISideBarItem[] = [
   {
     key: 'members',
-    label: 'Người dùng',
+    label: 'Users',
     icon: <PeopleAltRounded />,
   },
   {
     key: 'statistics',
-    label: 'Tình hình kinh doanh',
+    label: 'Dashboard',
     icon: <EqualizerRoundedIcon />,
   },
 ];

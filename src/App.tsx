@@ -7,12 +7,13 @@ import {
   Navigate,
 } from 'react-router-dom';
 import { checkCookie, getRoleFromCookie } from '@utils/Cookie';
-import { Map, Staff, SignIn } from './pages';
+import { Staff, SignIn } from './pages';
 import NewBookingComponent from './pages/staff/components/NewBooking';
 import ResolveGPSComponent from './pages/staff/components/ResolveGPS';
 import Admin from './pages/admin';
 import Members from './pages/admin/members';
 import Statistics from './pages/admin/statistics';
+import './App.css';
 
 const role = getRoleFromCookie('token');
 
@@ -57,8 +58,8 @@ export default function RouterHandler() {
     <BrowserRouter>
       <NavigationHandler />
       <Routes>
+        <Route index element={<PrivateRoute roles={[]} element={<></>} />} />
         <Route path='/sign-in' element={<SignIn />} />
-        <Route path='/' element={<Map />} />
         <Route path='/staff'>
           <Route index element={<Navigate to='/staff/new-booking' />} />
           <Route

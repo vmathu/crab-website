@@ -234,7 +234,7 @@ export default function Members() {
   return (
     <>
       <Typography variant='h6' fontWeight='600'>
-        Quản lý thông tin
+        Information Management
       </Typography>
       <DataTable />
     </>
