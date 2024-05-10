@@ -26,9 +26,6 @@ const theme = createTheme({
     h2: {
       fontSize: '28px',
     },
-    h3: {
-      fontSize: '20px',
-    },
   },
   components: {
     MuiButton: {

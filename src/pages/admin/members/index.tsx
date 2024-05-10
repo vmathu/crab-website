@@ -1,7 +1,6 @@
 import {
   AddRounded,
   CloseRounded,
-  // DeleteOutlineRounded,
   EditRounded,
   SaveRounded,
 } from '@mui/icons-material';
@@ -80,10 +79,6 @@ function DataTable() {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
 
-  // const handleDeleteClick = (id: GridRowId) => () => {
-  //   setRows(rows.filter((row) => row.id !== id));
-  // };
-
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'No.', width: 70, editable: true },
     { field: 'name', headerName: 'Name', width: 150, editable: true },
@@ -136,13 +131,6 @@ function DataTable() {
             onClick={handleEditClick(id)}
             color='inherit'
           />,
-          // <GridActionsCellItem
-          //   key={'delete' + id}
-          //   icon={<DeleteOutlineRounded />}
-          //   label='Delete'
-          //   onClick={handleDeleteClick(id)}
-          //   color='inherit'
-          // />,
         ];
       },
     },

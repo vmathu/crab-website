@@ -1,11 +1,20 @@
 import { useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
-import { checkCookie } from '@utils/Cookie';
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  useNavigate,
+  Navigate,
+} from 'react-router-dom';
+import { checkCookie, getRoleFromCookie } from '@utils/Cookie';
 import { Map, Staff, SignIn } from './pages';
 import NewBookingComponent from './pages/staff/components/NewBooking';
 import ResolveGPSComponent from './pages/staff/components/ResolveGPS';
 import Admin from './pages/admin';
 import Members from './pages/admin/members';
+import Statistics from './pages/admin/statistics';
+
+const role = getRoleFromCookie('token');
 
 function NavigationHandler() {
   const navigate = useNavigate();
@@ -15,14 +24,32 @@ function NavigationHandler() {
     const hasNavigated = localStorage.getItem('hasNavigated');
 
     if (isCookieValid && !hasNavigated) {
-      navigate('/staff/new-booking');
+      navigate(`/${role}`);
       localStorage.setItem('hasNavigated', 'true');
     } else if (!isCookieValid) {
       navigate('/sign-in');
     }
-  }, [navigate]);
+  }, []);
 
   return null;
+}
+
+function PrivateRoute({
+  element,
+  roles,
+}: {
+  element: React.ReactNode;
+  roles: string[];
+}) {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!roles.includes(role)) {
+      navigate(`/${role}`);
+    }
+  }, []);
+
+  return element;
 }
 
 export default function RouterHandler() {
@@ -32,53 +59,61 @@ export default function RouterHandler() {
       <Routes>
         <Route path='/sign-in' element={<SignIn />} />
         <Route path='/' element={<Map />} />
-        <Route
-          path='/staff/new-booking'
-          element={
-            <Staff>
-              <NewBookingComponent />
-            </Staff>
-          }
-        />
-        <Route
-          path='/staff/resolve-gps'
-          element={
-            <Staff>
-              <ResolveGPSComponent />
-            </Staff>
-          }
-        />
-        <Route path='/admin'>
+        <Route path='/staff'>
+          <Route index element={<Navigate to='/staff/new-booking' />} />
           <Route
-            index
+            path='new-booking'
             element={
-              <Admin>
-                <Members />
-              </Admin>
+              <PrivateRoute
+                roles={['staff']}
+                element={
+                  <Staff>
+                    <NewBookingComponent />
+                  </Staff>
+                }
+              />
             }
           />
           <Route
+            path='resolve-gps'
+            element={
+              <PrivateRoute
+                roles={['staff']}
+                element={
+                  <Staff>
+                    <ResolveGPSComponent />
+                  </Staff>
+                }
+              />
+            }
+          />
+        </Route>
+        <Route path='/admin'>
+          <Route index element={<Navigate to='/admin/members' />} />
+          <Route
             path='members'
             element={
-              <Admin>
-                <Members />
-              </Admin>
+              <PrivateRoute
+                roles={['admin']}
+                element={
+                  <Admin>
+                    <Members />
+                  </Admin>
+                }
+              />
             }
           />
           <Route
             path='statistics'
             element={
-              <Admin>
-                <></>
-              </Admin>
-            }
-          />
-          <Route
-            path='*'
-            element={
-              <Admin>
-                <Members />
-              </Admin>
+              <PrivateRoute
+                roles={['admin']}
+                element={
+                  <Admin>
+                    <Statistics />
+                  </Admin>
+                }
+              />
             }
           />
         </Route>
