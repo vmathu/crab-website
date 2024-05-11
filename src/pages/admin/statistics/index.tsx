@@ -51,6 +51,8 @@ function parseNumber(num: number) {
 }
 
 export default function Statistics() {
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
+
   const [customers, setCustomers] = useState<number>(0);
   const [income, setIncome] = useState<string>('');
   const [motorbikeFee, setMotorbikeFee] = useState<[]>([]);
@@ -61,9 +63,7 @@ export default function Statistics() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await doGet(
-        'http://localhost:3000/api/accounts/members?role=customer',
-      );
+      const response = await doGet(`${BASE_URL}accounts/members?role=customer`);
       setCustomers(response.data.data.length);
     };
 
@@ -72,10 +72,13 @@ export default function Statistics() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await doGet(
-        'http://localhost:3000/api/booking-infos/fees',
-      );
-
+      const response = await doGet(`${BASE_URL}booking-infos/fees`);
+      if (
+        Object.keys(response.data).length === 0 &&
+        response.data.constructor === Object
+      ) {
+        response.data = 0;
+      }
       setIncome(parseNumber(response.data));
     };
 
@@ -85,7 +88,7 @@ export default function Statistics() {
   useEffect(() => {
     const fetchData = async () => {
       const response = await doGet(
-        'http://localhost:3000/api/booking-infos/fees?type=motorbike',
+        `${BASE_URL}booking-infos/fees?type=motorbike`,
       );
 
       setMotorbikeFee(response.data);
@@ -96,9 +99,7 @@ export default function Statistics() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await doGet(
-        'http://localhost:3000/api/booking-infos/fees?type=car',
-      );
+      const response = await doGet(`${BASE_URL}booking-infos/fees?type=car`);
 
       setCarFee(response.data);
     };

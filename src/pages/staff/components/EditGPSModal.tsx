@@ -40,7 +40,8 @@ const style = {
 };
 
 export default function EditGPSModal({ onClose, value }: EditGPSModalProps) {
-  // const API_KEY = 'AIzaSyAe_FAtgZw3zJZN9RySh-4WMVHzXruyuaA';
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
+
   const [open, setOpen] = React.useState(true); // Open the modal by default
   const [position, setPosition] = React.useState({ lat: 0, lng: 0 });
 
@@ -199,17 +200,14 @@ export default function EditGPSModal({ onClose, value }: EditGPSModalProps) {
     };
 
     const response = await doPatch(
-      `http://localhost:3000/api/location-records/${value?._id}`,
+      `${BASE_URL}location-records/${value?._id}`,
       data,
     );
 
     // Close the modal on success
     if (response.success) {
       // Update fee for orders associated with the location record
-      await doPost(
-        `http://localhost:3000/api/location-records/${value?._id}/update-fee`,
-        {},
-      );
+      await doPost(`${BASE_URL}location-records/${value?._id}/update-fee`, {});
       handleClose();
       window.location.reload();
     }

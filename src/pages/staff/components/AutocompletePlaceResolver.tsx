@@ -43,8 +43,7 @@ export default function AutocompletePlaceResolver({
   value,
   onChange,
 }: Props) {
-  // const [destinationValue, setDestinationValue] =
-  //   React.useState<LocationValueProps | null>(null);
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
 
   // prettier-ignore
   const [destinationData, setDestinationData] = 
@@ -58,7 +57,7 @@ export default function AutocompletePlaceResolver({
         // Debounce function
         const debouncedFetch = debounce(async () => {
           const rawData = await fetch(
-            `http://localhost:3000/api/location-records?address=${newValue}`,
+            `${BASE_URL}location-records?address=${newValue}`,
           ).then((res) => res.json());
           setDestinationData(formatLocationData(rawData.data.data));
         }, 500);
