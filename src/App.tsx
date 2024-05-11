@@ -45,7 +45,8 @@ function PrivateRoute({
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!roles.includes(role)) {
+    if (!role) navigate('/sign-in');
+    else if (!roles.includes(role)) {
       navigate(`/${role}`);
     }
   }, []);
@@ -58,7 +59,7 @@ export default function RouterHandler() {
     <BrowserRouter>
       <NavigationHandler />
       <Routes>
-        <Route index element={<PrivateRoute roles={[]} element={<></>} />} />
+        <Route path='*' element={<PrivateRoute roles={[]} element={<></>} />} />
         <Route path='/sign-in' element={<SignIn />} />
         <Route path='/staff'>
           <Route index element={<Navigate to='/staff/new-booking' />} />
