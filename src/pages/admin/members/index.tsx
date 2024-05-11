@@ -49,13 +49,14 @@ function EditToolbar(props: EditToolbarProps) {
   return (
     <GridToolbarContainer>
       <Button color='primary' startIcon={<AddRounded />} onClick={handleClick}>
-        Tạo tài khoản mới
+        Add new account
       </Button>
     </GridToolbarContainer>
   );
 }
 
 function DataTable() {
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
   const [rows, setRows] = useState<GridRowModel[]>([]);
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
 
@@ -138,9 +139,7 @@ function DataTable() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await doGet(
-        'http://localhost:3000/api/accounts/members',
-      );
+      const response = await doGet(`${BASE_URL}accounts/members`);
       const dataWithIds = response.data.data.map(
         (item: any, index: number) => ({
           id: index + 1,
@@ -159,15 +158,12 @@ function DataTable() {
 
   const processRowUpdate = async (newRow: GridRowModel) => {
     if (newRow.isNew) {
-      const response = await doPost(
-        'http://localhost:3000/api/accounts/sign-up',
-        {
-          name: newRow.name,
-          phone: newRow.phone,
-          role: newRow.role,
-          password: '1',
-        },
-      );
+      const response = await doPost(`${BASE_URL}accounts/sign-up`, {
+        name: newRow.name,
+        phone: newRow.phone,
+        role: newRow.role,
+        password: '1',
+      });
       const updatedRow = {
         ...newRow,
         _id: response.data.data.id,
@@ -177,7 +173,7 @@ function DataTable() {
       return updatedRow;
     } else {
       console.log(newRow._id);
-      await doPatch('http://localhost:3000/api/accounts', {
+      await doPatch(`${BASE_URL}accounts`, {
         _id: newRow._id,
         name: newRow.name,
         role: newRow.role,

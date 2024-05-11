@@ -12,6 +12,8 @@ import { getExpFromJWT } from '@utils/JWT';
 import { getRoleFromCookie, setCookie } from '@utils/Cookie';
 
 export default function SignIn() {
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
+
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -36,10 +38,7 @@ export default function SignIn() {
       role: 'staff',
     };
 
-    const response = await doPost(
-      'http://localhost:3000/api/accounts/sign-in',
-      reqData,
-    );
+    const response = await doPost(`${BASE_URL}accounts/sign-in`, reqData);
 
     if (response.success) {
       setCookie(

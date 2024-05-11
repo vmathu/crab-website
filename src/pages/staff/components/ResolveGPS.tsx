@@ -37,7 +37,7 @@ function DataTable({
   useEffect(() => {
     const fetchData = async () => {
       const response = await doGet(
-        'http://localhost:3000/api/location-records/unresolved-list',
+        `${import.meta.env.VITE_BASE_URL}location-records/unresolved-list`,
       );
       const formattedData = formatLocationData(response.data.data);
       const dataWithIds = formattedData.map(
@@ -94,7 +94,7 @@ export default function ResolveGPSComponent() {
     setIsModalOpen(false);
   };
 
-  const API_KEY = 'AIzaSyAe_FAtgZw3zJZN9RySh-4WMVHzXruyuaA';
+  const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY as string;
 
   return (
     <>

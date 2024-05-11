@@ -25,6 +25,8 @@ interface VehicleProps {
 }
 
 export default function NewBookingComponent() {
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
+
   const [pickupValue, setPickupValue] =
     React.useState<LocationValueProps | null>(null);
   const [destinationValue, setDestinationValue] =
@@ -64,10 +66,7 @@ export default function NewBookingComponent() {
     };
 
     // Send the data to the server
-    const response = await doPost(
-      'http://localhost:3000/api/staff/bookings',
-      reqData,
-    );
+    const response = await doPost(`${BASE_URL}staff/bookings`, reqData);
 
     if (response.success) {
       setSnackBarStatus(true);
@@ -82,13 +81,13 @@ export default function NewBookingComponent() {
       // Update fee for orders associated with the location record
       if (pickupValue?._id)
         await doPost(
-          `http://localhost:3000/api/location-records/${pickupValue?._id}/update-fee`,
+          `${BASE_URL}location-records/${pickupValue?._id}/update-fee`,
           {},
         );
 
       if (destinationValue?._id)
         await doPost(
-          `http://localhost:3000/api/location-records/${destinationValue?._id}/update-fee`,
+          `${BASE_URL}location-records/${destinationValue?._id}/update-fee`,
           {},
         );
     } else {
